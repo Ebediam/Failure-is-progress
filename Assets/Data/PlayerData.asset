@@ -15,4 +15,13 @@ MonoBehaviour:
   acceleration: 20
   maxSpeed: 7
   jumpForce: 13
-  groundCheckLength: 0.5
+  speedDampening: 0.05
+  groundCheckLength: 0.3
+  groundCheckTimer: 0.25
+  doubleJumpSpeed: 9
+  dashSpeed: 25
+  dashDuration: 0.075
+  dashCooldown: 1.5
+  wallJumpSpeed: 13
+  wallJumpHorizontalSpeedMultiplier: 0.75
+  wallJumpDuration: 0.5

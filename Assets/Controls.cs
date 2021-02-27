@@ -57,6 +57,22 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""LDash"",
+                    ""type"": ""Button"",
+                    ""id"": ""391e0af4-686c-4f47-96e6-68e0600d2f18"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""RDash"",
+                    ""type"": ""Button"",
+                    ""id"": ""e9418f77-bee2-48fc-be81-2b5e38b039c4"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -117,34 +133,34 @@ public class @Controls : IInputActionCollection, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""690e37f5-93e3-4a9e-ad7b-df91268260b9"",
-                    ""path"": ""<Keyboard>/rightArrow"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Right"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""2e1e3aca-d609-4d41-a700-d593a31e4222"",
-                    ""path"": ""<Keyboard>/leftArrow"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Left"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""83d76c69-3418-45ba-88f7-7a7f4258be3d"",
                     ""path"": ""<Keyboard>/a"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Left"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5769af52-7415-4dab-9386-8245b5bb1b6a"",
+                    ""path"": ""<Keyboard>/leftArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""LDash"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f3fbe62f-a9ec-431b-ba2e-3a4c150e9cd0"",
+                    ""path"": ""<Keyboard>/rightArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""RDash"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -160,6 +176,8 @@ public class @Controls : IInputActionCollection, IDisposable
         m_Player_Spacebar = m_Player.FindAction("Spacebar", throwIfNotFound: true);
         m_Player_Right = m_Player.FindAction("Right", throwIfNotFound: true);
         m_Player_Left = m_Player.FindAction("Left", throwIfNotFound: true);
+        m_Player_LDash = m_Player.FindAction("LDash", throwIfNotFound: true);
+        m_Player_RDash = m_Player.FindAction("RDash", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -214,6 +232,8 @@ public class @Controls : IInputActionCollection, IDisposable
     private readonly InputAction m_Player_Spacebar;
     private readonly InputAction m_Player_Right;
     private readonly InputAction m_Player_Left;
+    private readonly InputAction m_Player_LDash;
+    private readonly InputAction m_Player_RDash;
     public struct PlayerActions
     {
         private @Controls m_Wrapper;
@@ -223,6 +243,8 @@ public class @Controls : IInputActionCollection, IDisposable
         public InputAction @Spacebar => m_Wrapper.m_Player_Spacebar;
         public InputAction @Right => m_Wrapper.m_Player_Right;
         public InputAction @Left => m_Wrapper.m_Player_Left;
+        public InputAction @LDash => m_Wrapper.m_Player_LDash;
+        public InputAction @RDash => m_Wrapper.m_Player_RDash;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -247,6 +269,12 @@ public class @Controls : IInputActionCollection, IDisposable
                 @Left.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLeft;
                 @Left.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLeft;
                 @Left.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLeft;
+                @LDash.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLDash;
+                @LDash.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLDash;
+                @LDash.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLDash;
+                @RDash.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRDash;
+                @RDash.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRDash;
+                @RDash.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRDash;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -266,6 +294,12 @@ public class @Controls : IInputActionCollection, IDisposable
                 @Left.started += instance.OnLeft;
                 @Left.performed += instance.OnLeft;
                 @Left.canceled += instance.OnLeft;
+                @LDash.started += instance.OnLDash;
+                @LDash.performed += instance.OnLDash;
+                @LDash.canceled += instance.OnLDash;
+                @RDash.started += instance.OnRDash;
+                @RDash.performed += instance.OnRDash;
+                @RDash.canceled += instance.OnRDash;
             }
         }
     }
@@ -277,5 +311,7 @@ public class @Controls : IInputActionCollection, IDisposable
         void OnSpacebar(InputAction.CallbackContext context);
         void OnRight(InputAction.CallbackContext context);
         void OnLeft(InputAction.CallbackContext context);
+        void OnLDash(InputAction.CallbackContext context);
+        void OnRDash(InputAction.CallbackContext context);
     }
 }

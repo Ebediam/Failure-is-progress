@@ -17,6 +17,8 @@ public class InputManager : ScriptableObject
     public BoolEvent Spacebar;
     public BoolEvent Left;
     public BoolEvent Right;
+    public BoolEvent Dash;
+
 
 
     public Vector2Event WASD;
@@ -40,6 +42,8 @@ public class InputManager : ScriptableObject
         controls.Player.Left.performed += OnLeft;
         controls.Player.Left.canceled += OnLeftEnd;
 
+        controls.Player.LDash.performed += OnLDash;
+        controls.Player.RDash.performed += OnRDash;
 
     }
 
@@ -90,6 +94,16 @@ public class InputManager : ScriptableObject
     void OnSpaceBar(InputAction.CallbackContext ctxt)
     {
         Spacebar?.Invoke(true);
+    }
+
+    void OnLDash(InputAction.CallbackContext ctxt)
+    {
+        Dash?.Invoke(false);
+    }
+
+    void OnRDash(InputAction.CallbackContext ctxt)
+    {
+        Dash?.Invoke(true);
     }
 
 }
