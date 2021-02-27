@@ -24,22 +24,31 @@ public class Player : MonoBehaviour
     bool hasWallJumped = false;
     bool isWallJumping = false;
 
+    bool isLedgeGrabing = false;
+    bool justLedgeGrabbed = false;
+
     public List<Transform> groundChecks;
     public LayerMask groundLayer;
 
     public Transform wallCheck;
+    public Transform ledgeCheck;
 
     [Header("Active Powerups")]
     public bool canDoubleJump = false;
     public bool canFly = false;
     public bool canDash = false;
     public bool canWallJump = false;
-
+    public bool canLedgeGrab = false;
 
     [Header("Powerup Events")]
     public VoidEventChannel doubleJumpEvent;
     public VoidEventChannel dashEvent;
     public VoidEventChannel wallJumpEvent;
+    public VoidEventChannel ledgeGrabEvent;
+    public VoidEventChannel flyEvent;
+    public VoidEventChannel powerUPEvent;
+
+    public bool canMove = true;
 
     // Start is called before the first frame update
     void Start()
@@ -48,16 +57,44 @@ public class Player : MonoBehaviour
         inputManager.Right += MoveRight;
         inputManager.Left += MoveLeft;
         inputManager.Dash += Dash;
+        inputManager.UpDown += Fly;
+        inputManager.UpDownEnd += FlyStop;
 
         doubleJumpEvent.VoidEvent += DoubleJumpPowerUp;
         dashEvent.VoidEvent += DashPowerUp;
         wallJumpEvent.VoidEvent += WallJumpPowerUp;
-
+        ledgeGrabEvent.VoidEvent += LedgeGrabPowerup;
+        flyEvent.VoidEvent += FlyPowerup;
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (!canMove)
+        {
+            return;
+        }
+
+        if (isLedgeGrabing)
+        {
+            return;
+        }
+
+        if (canLedgeGrab)
+        {
+            if (!onGround && !justLedgeGrabbed)
+            {
+                Ray ray = new Ray(ledgeCheck.position, ledgeCheck.forward);
+                if (Physics.Raycast(ray, playerData.groundCheckLength, groundLayer))
+                {
+                    rb.isKinematic = true;
+                    isLedgeGrabing = true;
+                }
+            }
+        }
+
+
+
         Move();
 
         if (!justJumped)
@@ -93,6 +130,7 @@ public class Player : MonoBehaviour
     public void Turn()
     {
         transform.Rotate(transform.up, 180f);
+        facingRight = !facingRight;
     }
 
     public void MoveRight(bool value)
@@ -104,7 +142,6 @@ public class Player : MonoBehaviour
             if (!facingRight)
             {
                 Turn();
-                facingRight = true;
             }
         }
 
@@ -122,7 +159,6 @@ public class Player : MonoBehaviour
             if (facingRight)
             {
                 Turn();
-                facingRight = false;
             }
         }
 
@@ -145,6 +181,7 @@ public class Player : MonoBehaviour
                 onGround = true;
                 hasDoubleJumped = false;
                 hasWallJumped = false;
+                rb.useGravity = true;
                 return;
             }
             else
@@ -156,10 +193,23 @@ public class Player : MonoBehaviour
 
     public void Jump(bool value)
     {
-
+        if (!canMove)
+        {
+            return;
+        }
 
         if (!onGround)
         {
+            if (isLedgeGrabing)
+            {
+                isLedgeGrabing = false;
+                justLedgeGrabbed = true;
+                rb.isKinematic = false;
+                rb.velocity = new Vector3(0, playerData.ledgeJumpSpeed);
+                StartCoroutine(LedgeGrabCooldown());
+                return;
+            }
+
             if (canWallJump)
             {
                 if (!hasWallJumped)
@@ -170,18 +220,18 @@ public class Player : MonoBehaviour
                     {
                         hasWallJumped = true;
                         isWallJumping = true;
-                        Turn();
+                        
                         if (facingRight)
                         {
-                            facingRight = false;
+                            
                             rb.velocity = new Vector3(-playerData.wallJumpSpeed * playerData.wallJumpHorizontalSpeedMultiplier, playerData.wallJumpSpeed, 0);
                         }
                         else
                         {
-                            facingRight = true;
+                            
                             rb.velocity = new Vector3(playerData.wallJumpSpeed * playerData.wallJumpHorizontalSpeedMultiplier, playerData.wallJumpSpeed, 0);
                         }
-
+                        Turn();
                         StartCoroutine(WallJumpCooldown());
                         return;
                     }
@@ -238,19 +288,27 @@ public class Player : MonoBehaviour
         yield return null;
     }
 
+    IEnumerator LedgeGrabCooldown()
+    {
+        yield return new WaitForSeconds(playerData.ledgeGrabCooldown);
+        justLedgeGrabbed = false;
+    }
     void DoubleJumpPowerUp()
     {
+        OnPowerUP();
         canDoubleJump = true;
         
     }
 
     void DashPowerUp()
     {
+        OnPowerUP();
         canDash = true;
     }
 
     void WallJumpPowerUp()
     {
+        OnPowerUP();
         canWallJump = true;
     }
 
@@ -274,13 +332,23 @@ public class Player : MonoBehaviour
         if (rightSide)
         {
             rb.velocity = new Vector3(playerData.dashSpeed, 0f, 0f);
+            if (movingLeft)
+            {
+                Turn();
+            }
+
 
         }
         else
         {
             rb.velocity = new Vector3(-playerData.dashSpeed, 0f, 0f);
+            if (movingRight)
+            {
+                Turn();
+            }
         }
 
+        
         StartCoroutine(DashEnder(rightSide));
         StartCoroutine(DashCooldown());
 
@@ -306,6 +374,55 @@ public class Player : MonoBehaviour
     {
         yield return new WaitForSeconds(playerData.wallJumpDuration);
         isWallJumping = false;
+        hasWallJumped = false;
     }
 
+
+    void LedgeGrabPowerup()
+    {
+        OnPowerUP();
+        canLedgeGrab = true;
+    }
+
+    void Fly(bool value)
+    {
+        if (!canFly)
+        {
+            return;
+
+        }
+
+        rb.useGravity = false;
+
+        if (value)
+        {
+            rb.velocity = Utils.ChangeVector3Value(rb.velocity, Utils.Position.y, playerData.maxSpeed);
+        }
+        else
+        {
+            rb.velocity = Utils.ChangeVector3Value(rb.velocity, Utils.Position.y, -playerData.maxSpeed);
+        }
+
+    }
+
+    void FlyStop()
+    {
+        if (!canFly)
+        {
+            return;
+        }
+
+        rb.velocity = Utils.ChangeVector3Value(rb.velocity, Utils.Position.y, 0);
+    }
+
+    void FlyPowerup()
+    {
+        OnPowerUP();
+        canFly = true;
+    }
+
+    void OnPowerUP()
+    {
+        canMove = true;
+    }
 }

@@ -10,6 +10,7 @@ public class InputManager : ScriptableObject
     public delegate void VoidEvent();
     public delegate void BoolEvent(bool value);
     public delegate void Vector2Event(Vector2 vector);
+    
 
 
     public VoidEvent LeftClick;
@@ -18,7 +19,8 @@ public class InputManager : ScriptableObject
     public BoolEvent Left;
     public BoolEvent Right;
     public BoolEvent Dash;
-
+    public BoolEvent UpDown;
+    public VoidEvent UpDownEnd;
 
 
     public Vector2Event WASD;
@@ -45,6 +47,8 @@ public class InputManager : ScriptableObject
         controls.Player.LDash.performed += OnLDash;
         controls.Player.RDash.performed += OnRDash;
 
+        controls.Player.UpDown.performed += OnUpDown;
+        controls.Player.UpDown.canceled += OnUpDownEnd;
     }
 
 
@@ -106,6 +110,24 @@ public class InputManager : ScriptableObject
         Dash?.Invoke(true);
     }
 
+    void OnUpDown(InputAction.CallbackContext ctxt)
+    {
+        float value = ctxt.ReadValue<float>();
+
+        if(value > 0)
+        {
+            UpDown?.Invoke(true);
+        }
+        else
+        {
+            UpDown?.Invoke(false);
+        }
+    }
+
+    void OnUpDownEnd(InputAction.CallbackContext ctxt)
+    {
+        UpDownEnd?.Invoke();
+    }
 }
 
 

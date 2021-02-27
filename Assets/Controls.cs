@@ -73,6 +73,14 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""UpDown"",
+                    ""type"": ""Button"",
+                    ""id"": ""360db218-880f-47fa-96dc-68ee50882a25"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -163,6 +171,39 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""action"": ""RDash"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""1D Axis"",
+                    ""id"": ""0e9ececb-e0e8-492d-afe3-3c8bbd055659"",
+                    ""path"": ""1DAxis(whichSideWins=1)"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""UpDown"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""bee94528-c3c0-40ed-82be-9dc96d5a47f6"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""UpDown"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""e7be2add-e0aa-4a97-91ad-89aee225c20d"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""UpDown"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         }
@@ -178,6 +219,7 @@ public class @Controls : IInputActionCollection, IDisposable
         m_Player_Left = m_Player.FindAction("Left", throwIfNotFound: true);
         m_Player_LDash = m_Player.FindAction("LDash", throwIfNotFound: true);
         m_Player_RDash = m_Player.FindAction("RDash", throwIfNotFound: true);
+        m_Player_UpDown = m_Player.FindAction("UpDown", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -234,6 +276,7 @@ public class @Controls : IInputActionCollection, IDisposable
     private readonly InputAction m_Player_Left;
     private readonly InputAction m_Player_LDash;
     private readonly InputAction m_Player_RDash;
+    private readonly InputAction m_Player_UpDown;
     public struct PlayerActions
     {
         private @Controls m_Wrapper;
@@ -245,6 +288,7 @@ public class @Controls : IInputActionCollection, IDisposable
         public InputAction @Left => m_Wrapper.m_Player_Left;
         public InputAction @LDash => m_Wrapper.m_Player_LDash;
         public InputAction @RDash => m_Wrapper.m_Player_RDash;
+        public InputAction @UpDown => m_Wrapper.m_Player_UpDown;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -275,6 +319,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @RDash.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRDash;
                 @RDash.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRDash;
                 @RDash.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRDash;
+                @UpDown.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnUpDown;
+                @UpDown.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnUpDown;
+                @UpDown.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnUpDown;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -300,6 +347,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @RDash.started += instance.OnRDash;
                 @RDash.performed += instance.OnRDash;
                 @RDash.canceled += instance.OnRDash;
+                @UpDown.started += instance.OnUpDown;
+                @UpDown.performed += instance.OnUpDown;
+                @UpDown.canceled += instance.OnUpDown;
             }
         }
     }
@@ -313,5 +363,6 @@ public class @Controls : IInputActionCollection, IDisposable
         void OnLeft(InputAction.CallbackContext context);
         void OnLDash(InputAction.CallbackContext context);
         void OnRDash(InputAction.CallbackContext context);
+        void OnUpDown(InputAction.CallbackContext context);
     }
 }

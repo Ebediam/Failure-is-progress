@@ -25,4 +25,9 @@ public class PlayerData : ScriptableObject
     public float wallJumpSpeed;
     public float wallJumpHorizontalSpeedMultiplier;
     public float wallJumpDuration;
+
+    [Header("Ledge Grab settings")]
+    public float ledgeCheckLength;
+    public float ledgeJumpSpeed;
+    public float ledgeGrabCooldown;
 }

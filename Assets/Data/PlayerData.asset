@@ -20,8 +20,11 @@ MonoBehaviour:
   groundCheckTimer: 0.25
   doubleJumpSpeed: 9
   dashSpeed: 25
-  dashDuration: 0.075
-  dashCooldown: 1.5
+  dashDuration: 0.1
+  dashCooldown: 1
   wallJumpSpeed: 13
   wallJumpHorizontalSpeedMultiplier: 0.75
-  wallJumpDuration: 0.5
+  wallJumpDuration: 0.4
+  ledgeCheckLength: 0.05
+  ledgeJumpSpeed: 12
+  ledgeGrabCooldown: 0.5
