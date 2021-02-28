@@ -26,5 +26,5 @@ MonoBehaviour:
   wallJumpHorizontalSpeedMultiplier: 0.75
   wallJumpDuration: 0.4
   ledgeCheckLength: 0.05
-  ledgeJumpSpeed: 12
+  ledgeJumpSpeed: 18
   ledgeGrabCooldown: 0.5

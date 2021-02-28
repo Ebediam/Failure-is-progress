@@ -48,6 +48,8 @@ public class Player : MonoBehaviour
     public VoidEventChannel flyEvent;
     public VoidEventChannel powerUPEvent;
 
+    public Animator animator;
+
     public bool canMove = true;
 
     // Start is called before the first frame update
@@ -70,6 +72,9 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+        AnimatorUpdate();
+
         if (!canMove)
         {
             return;
@@ -77,6 +82,7 @@ public class Player : MonoBehaviour
 
         if (isLedgeGrabing)
         {
+            
             return;
         }
 
@@ -424,5 +430,29 @@ public class Player : MonoBehaviour
     void OnPowerUP()
     {
         canMove = true;
+    }
+
+
+    void AnimatorUpdate()
+    {
+        animator.SetBool("isHanging", isLedgeGrabing);
+        animator.SetBool("isDashing", isDashing);
+        animator.SetBool("isMoving", movingLeft || movingRight);
+        if(!onGround)
+        {
+            if(rb.velocity.y > 0)
+            {
+                animator.SetBool("isJumping", true);
+            }
+            else
+            {
+                animator.SetBool("isFalling", true);
+            }
+        }
+        else
+        {
+            animator.SetBool("isJumping", false);
+            animator.SetBool("isFalling", false);
+        }
     }
 }

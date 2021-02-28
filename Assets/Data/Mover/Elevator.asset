@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   goSpeed: 4
   returnSpeed: 20
-  onInitialTime: 15
-  onEndTime: 0
+  onInitialTime: 1
+  onEndTime: 1
   distanceThreshold: 0.1
+  startsActive: 0
+  initiationEvent: {fileID: 11400000, guid: f26b22662fad9984ea9a6f81b90c494b, type: 2}

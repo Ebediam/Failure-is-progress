@@ -18,6 +18,23 @@ public class MoverData : ScriptableObject
     public delegate void StartDelegate();
     public StartDelegate startEvent;
 
+
+    public void OnEnable()
+    {
+        if (!startsActive)
+        {
+            initiationEvent.VoidEvent += Initiate;
+        }
+    }
+
+    public void OnDisable()
+    {
+        if (!startsActive)
+        {
+            initiationEvent.VoidEvent -= Initiate;
+        }
+    }
+
     public void Initiate()
     {
         startEvent?.Invoke();

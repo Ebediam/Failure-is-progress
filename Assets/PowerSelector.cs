@@ -5,6 +5,7 @@ using UnityEngine;
 public class PowerSelector : MonoBehaviour
 {
     public VoidEventChannel deathEvent;
+    public VoidEventChannel powerSelectedVoidEvent;
     public List<Powerup> powerups;
     public List<PowerButton> buttons;
     public Powerup flyPowerup;
@@ -57,6 +58,8 @@ public class PowerSelector : MonoBehaviour
         gameObject.SetActive(false);
 
         powerup.powerupEvent.Raise();
+        powerSelectedVoidEvent.Raise();
+
 
         if (powerups.Contains(powerup))
         {
