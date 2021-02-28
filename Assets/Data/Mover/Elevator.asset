@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2681a01a4fef4d74f807baaca58ec721, type: 3}
   m_Name: Elevator
   m_EditorClassIdentifier: 
-  goSpeed: 4
+  goSpeed: 3
   returnSpeed: 20
   onInitialTime: 1
   onEndTime: 1

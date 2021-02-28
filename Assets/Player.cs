@@ -33,6 +33,8 @@ public class Player : MonoBehaviour
     public Transform wallCheck;
     public Transform ledgeCheck;
 
+    public VoidEventChannel deathEvent;
+
     [Header("Active Powerups")]
     public bool canDoubleJump = false;
     public bool canFly = false;
@@ -49,6 +51,8 @@ public class Player : MonoBehaviour
     public VoidEventChannel powerUPEvent;
 
     public Animator animator;
+
+    public AudioManager audioManager;
 
     public bool canMove = true;
 
@@ -67,6 +71,8 @@ public class Player : MonoBehaviour
         wallJumpEvent.VoidEvent += WallJumpPowerUp;
         ledgeGrabEvent.VoidEvent += LedgeGrabPowerup;
         flyEvent.VoidEvent += FlyPowerup;
+
+        deathEvent.VoidEvent += OnDeath;
     }
 
     // Update is called once per frame
@@ -174,6 +180,8 @@ public class Player : MonoBehaviour
 
     void GroundCheck()
     {
+
+        bool oldGround = onGround;
         foreach(Transform groundCheck in groundChecks)
         {
             RaycastHit hitInfo;
@@ -183,11 +191,18 @@ public class Player : MonoBehaviour
             Debug.DrawLine(groundCheck.position, groundCheck.position+groundCheck.forward * playerData.groundCheckLength, Color.red) ;
 
             if(Physics.Raycast(ray, out hitInfo, playerData.groundCheckLength, groundLayer))
-            {                
+            {
+
                 onGround = true;
                 hasDoubleJumped = false;
                 hasWallJumped = false;
                 rb.useGravity = true;
+
+                if (!oldGround)
+                {
+                    audioManager.PlayGroundTouch();
+                }
+
                 return;
             }
             else
@@ -195,6 +210,8 @@ public class Player : MonoBehaviour
                 onGround = false;
             }
         }
+
+
     }
 
     public void Jump(bool value)
@@ -238,6 +255,7 @@ public class Player : MonoBehaviour
                             rb.velocity = new Vector3(playerData.wallJumpSpeed * playerData.wallJumpHorizontalSpeedMultiplier, playerData.wallJumpSpeed, 0);
                         }
                         Turn();
+                        audioManager.PlayJump();
                         StartCoroutine(WallJumpCooldown());
                         return;
                     }
@@ -254,6 +272,7 @@ public class Player : MonoBehaviour
 
                                        
                     rb.velocity = Utils.ChangeVector3Value(rb.velocity, Utils.Position.y, playerData.doubleJumpSpeed);
+                    audioManager.PlayJump();
 
                     return;
                 }
@@ -274,6 +293,7 @@ public class Player : MonoBehaviour
             rb.AddForce(transform.up * playerData.jumpForce, ForceMode.VelocityChange);
             onGround = false;
             justJumped = true;
+            audioManager.PlayJump();
             StartCoroutine(GroundCheckTimer());
         }
         
@@ -354,7 +374,9 @@ public class Player : MonoBehaviour
             }
         }
 
-        
+
+        audioManager.PlayDash();
+
         StartCoroutine(DashEnder(rightSide));
         StartCoroutine(DashCooldown());
 
@@ -430,6 +452,7 @@ public class Player : MonoBehaviour
     void OnPowerUP()
     {
         canMove = true;
+        audioManager.PlayPowerup();
     }
 
 
@@ -440,11 +463,11 @@ public class Player : MonoBehaviour
         animator.SetBool("isMoving", movingLeft || movingRight);
         if(!onGround)
         {
-            if(rb.velocity.y > 0)
+            if(rb.velocity.y > 0.1f)
             {
                 animator.SetBool("isJumping", true);
             }
-            else
+            else if(rb.velocity.y < -0.1f)
             {
                 animator.SetBool("isFalling", true);
             }
@@ -454,5 +477,10 @@ public class Player : MonoBehaviour
             animator.SetBool("isJumping", false);
             animator.SetBool("isFalling", false);
         }
+    }
+    
+    void OnDeath()
+    {
+        audioManager.PlayDeath();
     }
 }

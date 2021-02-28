@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59cc6da4958301d4bb72a13b539e9a2c, type: 3}
+  m_Name: Sounds
+  m_EditorClassIdentifier: 
+  dashSound: {fileID: 8300000, guid: e63487321b155aa4bacd6d085ce6634b, type: 3}
+  deathSound: {fileID: 8300000, guid: 740d02b5fbb911040859fa929b741da1, type: 3}
+  powerupSound: {fileID: 8300000, guid: 8f0422c67673c1d428227b2cd5f74582, type: 3}
+  jumpSound: {fileID: 8300000, guid: f14d4645219eb0a4fb55fa0b6d7553fc, type: 3}
+  landingSound: {fileID: 8300000, guid: f93fef890c7af294d811b70cc98ed6f1, type: 3}
