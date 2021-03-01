@@ -19,9 +19,9 @@ public class Mover : MonoBehaviour
         movingObject.transform.position = startPosition.position;
 
         data.startEvent += OnStart;
-
+        data.endEvent += ResetMover;
         if (data.startsActive)
-        {
+        {            
             StartCoroutine(StartToEnd());
         }
         
@@ -56,4 +56,10 @@ public class Mover : MonoBehaviour
         StartCoroutine(StartToEnd());
     }
 
+
+    void ResetMover()
+    {
+        StopAllCoroutines();
+        movingObject.transform.position = startPosition.position;
+    }
 }

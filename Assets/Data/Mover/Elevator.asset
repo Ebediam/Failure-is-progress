@@ -19,3 +19,4 @@ MonoBehaviour:
   distanceThreshold: 0.1
   startsActive: 0
   initiationEvent: {fileID: 11400000, guid: f26b22662fad9984ea9a6f81b90c494b, type: 2}
+  endingEvent: {fileID: 11400000, guid: 907cd8c1c03b0064a93935dcf22aa9dd, type: 2}

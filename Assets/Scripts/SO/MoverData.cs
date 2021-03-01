@@ -15,15 +15,19 @@ public class MoverData : ScriptableObject
     public bool startsActive;
 
     public VoidEventChannel initiationEvent;
+    public VoidEventChannel endingEvent;
     public delegate void StartDelegate();
     public StartDelegate startEvent;
-
+    public StartDelegate endEvent;
+    
 
     public void OnEnable()
     {
         if (!startsActive)
         {
             initiationEvent.VoidEvent += Initiate;
+            endingEvent.VoidEvent += OnEnd;
+
         }
     }
 
@@ -32,12 +36,18 @@ public class MoverData : ScriptableObject
         if (!startsActive)
         {
             initiationEvent.VoidEvent -= Initiate;
+            endingEvent.VoidEvent -= OnEnd;
         }
     }
 
     public void Initiate()
     {
         startEvent?.Invoke();
+    }
+
+    public void OnEnd()
+    {
+        endEvent?.Invoke();
     }
 
 }
